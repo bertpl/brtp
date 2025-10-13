@@ -40,7 +40,7 @@ runs:
             magick -pointsize 96 -font "./images/splash/google_fonts_montserrat_bold.ttf" "./images/splash/splash.webp" -gravity South -fill "#aaaaaa" -annotate +0+50 "Collection of Python utilities for personal use." "./images/temp.png"
             magick -pointsize 36 -font "./images/splash/google_fonts_montserrat_italic.ttf" "./images/temp.png" -gravity SouthWest -fill "#aaaaaa" -annotate +10+5 "DiffusionBee 2.5.3 (FLUX.1-dev + Real-ESRGAN)" "./images/temp.png"
             magick -pointsize 128 -font "./images/splash/google_fonts_montserrat_bold.ttf" "./images/temp.png" -gravity West -fill "black" -annotate +1403+563 "v${PACKAGE_EFFECTIVE_VERSION}" "./images/temp.png"            
-            magick -pointsize 128 -font "./images/splash/google_fonts_montserrat_bold.ttf" "./images/temp.png" -gravity West -fill "white" -annotate +1400+560 "v${PACKAGE_EFFECTIVE_VERSION}" -quality 99 -define webp:lossless=false "./images/splash_with_version.webp"                                                
+            magick -pointsize 128 -font "./images/splash/google_fonts_montserrat_bold.ttf" "./images/temp.png" -gravity West -fill "white" -annotate +1400+560 "v${PACKAGE_EFFECTIVE_VERSION}" -quality 100 -define webp:lossless=true "./images/splash_with_version.webp"                                                
             mkdir -p "./splash"
             cp "./images/splash_with_version.webp" "./splash/splash.webp"           
 
