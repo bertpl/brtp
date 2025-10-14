@@ -9,7 +9,7 @@
 - Improvements to CI/CD pipeline
 - **new**: 
   - `collections` --> `zip_random`
-  - `math.utils` --> `sign`, `same_sign`
+  - `math.utils` --> `sign`, `same_sign`, `EPS`
 
 <!------------------------------------------------------------------------------------------------->
 > ## v0.0.1
