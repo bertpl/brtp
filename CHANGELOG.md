@@ -9,6 +9,7 @@
 - Fixes to CI/CD pipeline
 - **new**: 
   - `benchmarking` --> `Timer`
+  - `formatting` --> `format_time_duration`, `format_short_time_duration`, `format_long_time_duration`
   - `math.utils` --> `HALF_EPS`
 
 <!------------------------------------------------------------------------------------------------->
