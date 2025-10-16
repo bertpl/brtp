@@ -1,2 +1,2 @@
-from ._precision import EPS
+from ._precision import EPS, HALF_EPS
 from ._sign import same_sign, sign
