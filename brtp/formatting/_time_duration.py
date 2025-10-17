@@ -146,14 +146,14 @@ def _format_short_time_duration_to_spec(
         c_and_unit = [
             (1.0, "sec " if right_aligned else "s"),
             (1e3, "msec"),
-            (1e6, "usec"),
+            (1e6, "μsec"),
             (1e9, "nsec"),
         ]
     else:
         c_and_unit = [
             (1.0, "s " if right_aligned else "s"),
             (1e3, "ms"),
-            (1e6, "us"),
+            (1e6, "μs"),
             (1e9, "ns"),
         ]
 
