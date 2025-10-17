@@ -205,7 +205,7 @@ def test_format_long_time_duration_to_spec(value: float, precision: str, expecte
     [
         (123.45, 2, True, True, True, "123.45 sec "),
         (0.12345, 2, True, True, True, "123.45 msec"),
-        (0.12345 * 1e-3, 2, True, True, True, "123.45 usec"),
+        (0.12345 * 1e-3, 2, True, True, True, "123.45 μsec"),
         (0.12345 * 1e-6, 2, True, True, True, "123.45 nsec"),
         (0.12345 * 1e-9, 2, True, True, True, "0.12 nsec"),
         (0.12345, 2, False, False, False, "123.45ms"),
