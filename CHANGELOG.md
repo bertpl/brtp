@@ -6,6 +6,7 @@
 <!------------------------------------------------------------------------------------------------->
 
 - **new**:
+  - `benchmarking` --> `benchmark`
   - `math.utils` --> `clip
 - **updated**:` 
   - `formatting` --> `format_short_time_duration` use more appropriate character for μsec
