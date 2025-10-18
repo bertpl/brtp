@@ -5,7 +5,11 @@
 > *(under development)*
 <!------------------------------------------------------------------------------------------------->
 
-/
+- **new**:
+  - `math.sampling` --> `linspace`, `logspace`
+  - `math.aggregation` 
+    - `mean`, `weighted_mean`, `ordered_weighted_mean`
+    - `geo_mean`, `weighted_geo_mean`, `ordered_weighted_geo_mean`
 
 <!------------------------------------------------------------------------------------------------->
 > ## v0.0.4

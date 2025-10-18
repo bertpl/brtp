@@ -1,5 +1,5 @@
-from typing import Iterable
 import random
+from typing import Iterable
 
 
 def zip_random(*iterables, seed: int | None = None) -> Iterable[tuple]:
