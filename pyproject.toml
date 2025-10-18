@@ -1,6 +1,6 @@
 [project]
 name = "brtp"
-version = "0.0.5"
+version = "0.0.6"
 description = "Collection of personal Python utilities."
 readme = "README.md"
 requires-python = ">=3.11"
