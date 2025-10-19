@@ -8,6 +8,9 @@
 - **new**:
   - `compat` --> `numba`, `is_numba_installed`
 
+- **improved**:
+  - `plotting.canvas` --> `LineStyle`: improved test coverage
+
 <!------------------------------------------------------------------------------------------------->
 > ## v0.0.7
 > *(2025-10-19)*
