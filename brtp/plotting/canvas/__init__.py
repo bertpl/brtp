@@ -5,4 +5,5 @@ Module providing a 'wrapper' class (Canvas) for plotting in matplotlib figures, 
   - ...
 """
 
+from ._canvas_range import CanvasRange, RangeSpecs
 from ._linestyle import LineStyle
