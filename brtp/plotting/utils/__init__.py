@@ -1,1 +1,1 @@
-from ._transforms import Transform, TransformLinear, TransformLog
+from ._transforms import Transform, TransformLinear, TransformLinLog, TransformLog

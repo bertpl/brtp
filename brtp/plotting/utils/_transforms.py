@@ -140,6 +140,17 @@ class Transform(ABC):
     ) -> TransformLog:
         return TransformLog(user_range, figure_range, reverse)
 
+    @classmethod
+    def lin_log(
+        cls,
+        user_range: tuple[float, float],
+        figure_range: tuple[float, float],
+        c_fig_lin_max: float,
+        v_user_lin_max: float,
+        reverse: bool = False,
+    ) -> TransformLinLog:
+        return TransformLinLog(user_range, figure_range, c_fig_lin_max, v_user_lin_max, reverse)
+
 
 # =================================================================================================
 #  LINEAR
@@ -190,6 +201,51 @@ class TransformLog(Transform):
 
     def _backward(self, v_fig: np.ndarray) -> np.ndarray:
         return np.exp(self._c0_inv + (self._c1_inv * v_fig))
+
+    def is_linear(self) -> bool:
+        return False
+
+
+# =================================================================================================
+#  Linear-Logarithmic
+# =================================================================================================
+class TransformLinLog(Transform):
+    """
+    Combined Linear-Logarithmic Transform.
+
+    The first part of the range is mapped linearly, while the upper part of the range is mapped logarithmically.
+
+        [user_min, user_lin_max]   -->      linear mapping to [fig_min, fig_lin_max]
+        [user_lin_max, user_max]   --> logarithmic mapping to [fig_lin_max, fig_max]
+
+    with fig_lin_max = fig_min + c_fig_lin_max * (fig_max - fig_min).
+    """
+
+    def __init__(
+        self,
+        user_range: tuple[float, float],
+        figure_range: tuple[float, float],
+        c_fig_lin_max: float,
+        v_user_lin_max: float,
+        reverse: bool = False,
+    ):
+        super().__init__(user_range, figure_range, reverse)
+        self._v_user_lin_max = v_user_lin_max
+        self._v_fig_lin_max = figure_range[0] + c_fig_lin_max * (figure_range[1] - figure_range[0])
+        self._lin_transform = TransformLinear((user_range[0], v_user_lin_max), (figure_range[0], self._v_fig_lin_max))
+        self._log_transform = TransformLog((v_user_lin_max, user_range[1]), (self._v_fig_lin_max, figure_range[1]))
+
+    def _forward(self, v_user: np.ndarray) -> np.ndarray:
+        v_fig = np.zeros_like(v_user)
+        v_fig[v_user <= self._v_user_lin_max] = self._lin_transform(v_user[v_user <= self._v_user_lin_max])
+        v_fig[v_user > self._v_user_lin_max] = self._log_transform(v_user[v_user > self._v_user_lin_max])
+        return v_fig
+
+    def _backward(self, v_fig: np.ndarray) -> np.ndarray:
+        v_user = np.zeros_like(v_fig)
+        v_user[v_fig <= self._v_fig_lin_max] = self._lin_transform.inv(v_fig[v_fig <= self._v_fig_lin_max])
+        v_user[v_fig > self._v_fig_lin_max] = self._log_transform.inv(v_fig[v_fig > self._v_fig_lin_max])
+        return v_user
 
     def is_linear(self) -> bool:
         return False
