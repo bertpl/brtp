@@ -7,6 +7,7 @@
 
 - **new**:
   - `compat` --> `numba`, `is_numba_installed`
+  - `math.optim.discrete` --> `min_separation`
 
 - **improved**:
   - `plotting.canvas` --> `LineStyle`: improved test coverage
