@@ -9,6 +9,11 @@ dependencies = [
     "numpy>=2.0.0",
 ]
 
+[project.optional-dependencies]
+numba = [
+    "numba>=0.57",
+]
+
 [project.urls]
 Source = "https://github.com/bertpl/brtp"
 ChangeLog = "https://github.com/bertpl/brtp/blob/develop/CHANGELOG.md"
