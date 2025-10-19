@@ -1,8 +1,8 @@
 <!--START_SECTION:images-->
 ![shields.io-python-versions](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue)
-![genbadge-test-count](https://bertpl.github.io/brtp/version_artifacts/v0.0.6/badge-test-count.svg)
-![genbadge-test-coverage](https://bertpl.github.io/brtp/version_artifacts/v0.0.6/badge-coverage.svg)
-![brtp logo](https://bertpl.github.io/brtp/version_artifacts/v0.0.6/splash.webp)
+![genbadge-test-count](https://bertpl.github.io/brtp/version_artifacts/v0.0.7/badge-test-count.svg)
+![genbadge-test-coverage](https://bertpl.github.io/brtp/version_artifacts/v0.0.7/badge-coverage.svg)
+![brtp logo](https://bertpl.github.io/brtp/version_artifacts/v0.0.7/splash.webp)
 <!--END_SECTION:images-->
 
 # brtp
