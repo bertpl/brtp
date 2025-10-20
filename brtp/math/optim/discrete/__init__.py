@@ -1,1 +1,1 @@
-from .max_min_separation_selection import min_separation
+from .separation_maximization import mean_separation, min_separation
