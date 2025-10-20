@@ -20,4 +20,5 @@ REQUESTED
                               well-separated from their neighbors).
 """
 
+from ._constraints import FairnessConstraint
 from ._helpers import CachedDistances, mean_separation, min_separation
