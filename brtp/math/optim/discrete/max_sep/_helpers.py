@@ -36,7 +36,7 @@ class CachedDistances:
         self.__vectors = vectors
         self.__cache: dict[tuple[int, int], float] = dict()
 
-    def dist(self, i: int, j: int) -> float:
+    def __call__(self, i: int, j: int) -> float:
         i, j = min(i, j), max(i, j)  # exploit dist(i,j) == dist(j,i) to avoid cache misses
         if (result := self.__cache.get((i, j))) is not None:
             return result

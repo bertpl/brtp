@@ -16,6 +16,10 @@ class FairnessConstraint:
             raise ValueError("'ub' must be non-negative.")
         if self.lb is not None and self.ub is not None and self.lb > self.ub:
             raise ValueError("'lb' cannot be greater than 'ub'.")
+        if min(self.indices) < 0:
+            raise ValueError("'indices' must be non-negative.")
+        if self.lb > len(self.indices):
+            raise ValueError("'lb' must be <= len(indices).")
 
     @property
     def sorted_indices(self) -> list[int]:

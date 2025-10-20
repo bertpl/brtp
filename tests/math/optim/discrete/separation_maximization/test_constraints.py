@@ -1,6 +1,6 @@
 import pytest
 
-from brtp.math.optim.discrete.separation_maximization import FairnessConstraint
+from brtp.math.optim.discrete.max_sep import FairnessConstraint
 
 
 def test_fairness_constraint():
@@ -18,11 +18,18 @@ def test_fairness_constraint():
     assert con.sorted_indices == [0, 1, 2, 5, 10]
 
 
-@pytest.mark.parametrize("lb,ub", [(None, None), (None, -1), (-1, None), (10, 5)])
-def test_fairness_constraint_validation(lb, ub):
-    # --- arrange -----------------------------------------
-    indices = frozenset([0, 1, 2, 10, 5])
-
+@pytest.mark.parametrize(
+    "indices,lb,ub",
+    [
+        ([0, 1, 2, 10, 5], None, None),
+        ([0, 1, 2, 10, 5], None, -1),
+        ([0, 1, 2, 10, 5], -1, None),
+        ([0, 1, 2, 10, 5], 4, 3),
+        ([0, 1, 2, 10, 5], 10, 10),
+        ([0, -1, 2, 10, 5], 2, 4),
+    ],
+)
+def test_fairness_constraint_validation(indices, lb, ub):
     # --- act & assert ------------------------------------
     with pytest.raises(ValueError):
-        _ = FairnessConstraint(indices, lb, ub)
+        _ = FairnessConstraint(frozenset(indices), lb, ub)

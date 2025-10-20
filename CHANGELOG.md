@@ -7,7 +7,7 @@
 
 - **new**:
   - `compat` --> `numba`, `is_numba_installed`
-  - `math.optim.discrete.separation_maximization` --> `mean_separation`, `min_separation`, `CachedDistances`, `FairnessConstraint`
+  - `math.optim.discrete.max_sep` --> `mean_separation`, `min_separation`, `CachedDistances`, `FairnessConstraint`
 
 - **improved**:
   - `plotting.canvas` --> `LineStyle`: improved test coverage

@@ -3,7 +3,7 @@ import math
 import numpy as np
 import pytest
 
-from brtp.math.optim.discrete.separation_maximization import CachedDistances, mean_separation, min_separation
+from brtp.math.optim.discrete.max_sep import CachedDistances, mean_separation, min_separation
 
 
 # =================================================================================================
@@ -52,10 +52,10 @@ def test_cached_distances():
     cached_distances = CachedDistances(vectors)
 
     # --- act ---------------------------------------------
-    d02 = cached_distances.dist(0, 2)
-    d23 = cached_distances.dist(2, 3)
-    d23_cached = cached_distances.dist(2, 3)
-    d32_cached = cached_distances.dist(3, 2)
+    d02 = cached_distances(0, 2)
+    d23 = cached_distances(2, 3)
+    d23_cached = cached_distances(2, 3)
+    d32_cached = cached_distances(3, 2)
 
     # --- assert ------------------------------------------
     assert d02 == 10.0
