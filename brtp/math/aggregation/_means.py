@@ -1,8 +1,9 @@
+from functools import lru_cache
 from typing import Iterable
 
 import numpy as np
 
-from brtp.math.sampling._deterministic import linspace
+from brtp.compat import numba
 
 
 # =================================================================================================
@@ -29,44 +30,47 @@ def weighted_mean(values: Iterable[int | float], weights: Iterable[int | float])
         return float(np.sum(w * v) / np.sum(w))
 
 
-def ordered_weighted_mean(values: Iterable[int | float], power: float) -> float:
+def ordered_weighted_mean(values: Iterable[int | float], c: float) -> float:
     """
-    Compute ordered weighted geometric mean of provided values
+    Compute Ordered Weighted Average (OWA) of provided values
 
     See eg: https://www.sciencedirect.com/science/article/abs/pii/S0020025524001889
 
     Step-wise procedure:
-      - Sort values  (if power < 0, sort in reverse order)
-      - Compute weights as w ~ (i+0.5)*abs(p), with i the index into the array
-      - Compute weighted mean with these weights
+      - Sort values  (ascending order)
+      - Compute weights as w ~ e^(c*(i/(n-1))), with i the index into the array & n the array size
+      - Compute weighted average of the sorted values with these weights
 
-    Depending on the power parameter, the 'center of gravity' of the weights will lie at a different quantile
-    of the sorted values.
+    Depending on the 'c' parameter, the 'center of gravity' of the weights will lie at a different quantile
+    of the sorted values.  (NOTE: this is correlated to the 'orness' = 1 - quantile of the weighted average)
 
-        power = -3.0        -> 20% quantile
-        power = -2.0        -> 25% quantile
-        power = -1.0        -> 33% quantile
-        power =  0.0        -> 50% quantile (regular mean)
-        power =  1.0        -> 66% quantile
-        power =  2.0        -> 75% quantile
-        power =  3.0        -> 80% quantile
+        c =-10.0        -> 10.0% quantile
+        c = -5.0        -> 19.3% quantile
+        c = -4.0        -> 23.1% quantile
+        c = -3.0        -> 28.1% quantile
+        c = -2.0        -> 34.3% quantile
+        c = -1.0        -> 41.8% quantile
+
+        c =  0.0        -> 50.0% quantile (regular mean)
+
+        c =  1.0        -> 58.2% quantile
+        c =  2.0        -> 65.7% quantile
+        c =  3.0        -> 71.9% quantile
+        c =  4.0        -> 76.9% quantile
+        c =  5.0        -> 80.7% quantile
+        c = 10.0        -> 90.0% quantile
 
     Hence, the net effect is that we compute the mean of the provided values, with emphasis on the
-      larger values (power > 0) or smaller values (power < 0).
+      larger values (c > 0) or smaller values (c < 0).
     """
-    if power == 0:
+    if c == 0:
         return mean(values)
     else:
-        values = sorted(list(values), reverse=(power < 0))
-        weights = np.array(
-            linspace(
-                min_value=0.0,
-                max_value=1.0,
-                n=len(values),
-                inclusive=False,  # this makes sure that all weights are strictly positive
-            )
-        ) ** abs(power)
-        return weighted_mean(values, weights)
+        sorted_values = sorted(values)
+        return weighted_mean(
+            values=sorted_values,
+            weights=_exponential_weights(c, len(sorted_values)),
+        )
 
 
 # =================================================================================================
@@ -102,43 +106,67 @@ def weighted_geo_mean(values: Iterable[int | float], weights: Iterable[int | flo
         return float(np.exp(np.sum(w * np.log(v))))
 
 
-def ordered_weighted_geo_mean(values: Iterable[int | float], power: float) -> float:
+def ordered_weighted_geo_mean(values: Iterable[int | float], c: float) -> float:
     """
-    Compute ordered weighted geometric mean of provided values
+    Compute Ordered Weighted Geometric Average (OWGA) of provided values
 
     See eg: https://www.sciencedirect.com/science/article/abs/pii/S0020025524001889
 
     Step-wise procedure:
-      - Sort values  (if power < 0, sort in reverse order)
-      - Compute weights as w ~ (i+0.5)*abs(p), with i the index into the array
-      - Compute weighted geometric mean with these weights
+      - Sort values  (ascending order)
+      - Compute weights as w ~ e^(c*(i/(n-1))), with i the index into the array & n the array size
+      - Compute weighted geomtetric average of the sorted values with these weights
 
-    Depending on the power parameter, the 'center of gravity' of the weights will lie at a different quantile
-    of the sorted values.
+    Depending on the 'c' parameter, the 'center of gravity' of the weights will lie at a different quantile
+    of the sorted values.  (NOTE: this is correlated to the 'orness' = 1 - quantile of the weighted average)
 
-        power = -3.0        -> 20% quantile
-        power = -2.0        -> 25% quantile
-        power = -1.0        -> 33% quantile
-        power =  0.0        -> 50% quantile (regular mean)
-        power =  1.0        -> 66% quantile
-        power =  2.0        -> 75% quantile
-        power =  3.0        -> 80% quantile
+        c =-10.0        -> 10.0% quantile
+        c = -5.0        -> 19.3% quantile
+        c = -4.0        -> 23.1% quantile
+        c = -3.0        -> 28.1% quantile
+        c = -2.0        -> 34.3% quantile
+        c = -1.0        -> 41.8% quantile
 
-    Hence, the net effect is that we compute the geometric mean of the provided values, with emphasis on the
-      larger values (power > 0) or smaller values (power < 0).
+        c =  0.0        -> 50.0% quantile (regular mean)
+
+        c =  1.0        -> 58.2% quantile
+        c =  2.0        -> 65.7% quantile
+        c =  3.0        -> 71.9% quantile
+        c =  4.0        -> 76.9% quantile
+        c =  5.0        -> 80.7% quantile
+        c = 10.0        -> 90.0% quantile
+
+    Hence, the net effect is that we compute the mean of the provided values, with emphasis on the
+      larger values (c > 0) or smaller values (c < 0).
     """
-    if power == 0:
+    if c == 0:
         return geo_mean(values)
     else:
-        values = sorted(list(values), reverse=(power < 0))
-        weights = np.array(
-            linspace(
-                min_value=0.0,
-                max_value=1.0,
-                n=len(values),
-                inclusive=False,  # this makes sure that all weights are strictly positive
-            )
-        ) ** abs(power)
-        print(values)
-        print(weights)
-        return weighted_geo_mean(values, weights)
+        sorted_values = sorted(values)
+        return weighted_geo_mean(
+            values=sorted_values,
+            weights=_exponential_weights(c, len(sorted_values)),
+        )
+
+
+# =================================================================================================
+#  Internal
+# =================================================================================================
+@lru_cache(maxsize=100)
+def _exponential_weights(c: float, n: int) -> np.ndarray:
+    return _exponential_weights_numba(c, n)
+
+
+@numba.njit
+def _exponential_weights_numba(c: float, n: int) -> np.ndarray:
+    """
+    Computes np.exp(c * np.linspace(0.0, 1.0, n)) but in more efficient way,
+    using 1 exponentiation & n multiplications, rather than n exponentiations.
+    """
+    factor = np.exp(c / (n - 1))
+    w = np.ones(n)
+    w_i = 1.0
+    for i in range(n):
+        w[i] = w_i
+        w_i *= factor
+    return w

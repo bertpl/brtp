@@ -11,6 +11,7 @@
 
 - **improved**:
   - `plotting.canvas` --> `LineStyle`: improved test coverage
+  - `math.aggregation` --> move to exponential weighting scheme in `ordered_weighted_mean` & `ordered_weighted_geo_mean`
 
 <!------------------------------------------------------------------------------------------------->
 > ## v0.0.7
