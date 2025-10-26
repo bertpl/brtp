@@ -2,11 +2,12 @@
 
 <!------------------------------------------------------------------------------------------------->
 > ## v0.0.8
-> *(under development)*
+> *(2025-10-26)*
 <!------------------------------------------------------------------------------------------------->
 
 - **new**:
   - `compat` --> `numba`, `is_numba_installed`
+  - `caching` --> `per_instance_lru_cache`, `per_instance_cache`
 
 - **improved**:
   - `plotting.canvas` --> `LineStyle`: improved test coverage
