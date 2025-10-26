@@ -111,6 +111,16 @@ def test_linestyle_plot():
     ax.plot.assert_called_once_with([1, 1], [0, 1], **(ls.get_line_kwargs() | ls.get_marker_kwargs()))
 
 
+def test_linestyle_plot_value_error():
+    # --- arrange -----------------------------------------
+    ax = Mock(plot=Mock())
+    ls = LineStyle()
+
+    # --- act / assert ------------------------------------
+    with pytest.raises(ValueError):
+        ls.plot(ax, x=[1, 2], y=[0, 1, 2])  # x and y length mismatch
+
+
 def test_linestyle_plot_sample():
     # --- arrange -----------------------------------------
     ax = Mock(plot=Mock())
@@ -122,3 +132,13 @@ def test_linestyle_plot_sample():
     # --- assert ------------------------------------------
     ax.plot.assert_any_call([1, 2], [3, 3], **ls.get_line_kwargs())  # line sample
     ax.plot.assert_any_call(1.5, 3, **ls.get_marker_kwargs())  # marker at midpoint
+
+
+def test_linestyle_plot_sample_value_error():
+    # --- arrange -----------------------------------------
+    ax = Mock(plot=Mock())
+    ls = LineStyle()
+
+    # --- act / assert ------------------------------------
+    with pytest.raises(ValueError):
+        ls.plot_sample(ax, x=[1, 2, 3], y=4)  # x length mismatch for line sample

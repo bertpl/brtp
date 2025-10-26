@@ -2,10 +2,16 @@
 
 <!------------------------------------------------------------------------------------------------->
 > ## v0.0.8
-> *(under development)*
+> *(2025-10-26)*
 <!------------------------------------------------------------------------------------------------->
 
-/
+- **new**:
+  - `compat` --> `numba`, `is_numba_installed`
+  - `caching` --> `per_instance_lru_cache`, `per_instance_cache`
+
+- **improved**:
+  - `plotting.canvas` --> `LineStyle`: improved test coverage
+  - `math.aggregation` --> move to exponential weighting scheme in `ordered_weighted_mean` & `ordered_weighted_geo_mean`
 
 <!------------------------------------------------------------------------------------------------->
 > ## v0.0.7

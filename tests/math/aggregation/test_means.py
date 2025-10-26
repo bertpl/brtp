@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 from numpy.testing import assert_almost_equal
 
@@ -9,6 +10,7 @@ from brtp.math.aggregation import (
     weighted_geo_mean,
     weighted_mean,
 )
+from brtp.math.aggregation._means import _exponential_weights
 
 
 # =================================================================================================
@@ -114,3 +116,18 @@ def test_ordered_weighted_geo_mean():
     # --- assert ------------------------------------------
     assert result_0 == pytest.approx(geo_mean(values))
     assert 1.0 < result_minus_2 < result_minus_1 < result_0 < result_plus_1 < result_plus_2 < 10.0
+
+
+# =================================================================================================
+#  Helpers
+# =================================================================================================
+@pytest.mark.parametrize("n,c", [(10, 1), (15, -2), (100, 5)])
+def test_exponential_weights(c: float, n: int):
+    # --- arrange -----------------------------------------
+    w_expected = np.exp(c * np.linspace(0.0, 1.0, n))
+
+    # --- act ---------------------------------------------
+    w = _exponential_weights(c, n)
+
+    # --- assert ------------------------------------------
+    assert np.allclose(w, w_expected)
