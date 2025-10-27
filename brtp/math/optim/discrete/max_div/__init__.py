@@ -23,4 +23,5 @@ REQUESTED
 
 from ._constraints import FairnessConstraint
 from ._distances import PairWiseDistances, PairWiseDistances_Eager, PairWiseDistances_Lazy
+from ._enums import ConstraintViolationMetric, DistanceMetric, DiversityMetric
 from ._metrics import mean_separation, min_separation
