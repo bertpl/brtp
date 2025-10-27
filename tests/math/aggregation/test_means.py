@@ -121,10 +121,24 @@ def test_ordered_weighted_geo_mean():
 # =================================================================================================
 #  Helpers
 # =================================================================================================
-@pytest.mark.parametrize("n,c", [(10, 1), (15, -2), (100, 5)])
+@pytest.mark.parametrize(
+    "n,c",
+    [
+        (10, 1.1),
+        (15, -2.3),
+        (100, 5.7),
+        (10, 0.0),
+        (1, -2.718),
+        (1, 0.0),
+        (1, 3.141),
+    ],
+)
 def test_exponential_weights(c: float, n: int):
     # --- arrange -----------------------------------------
-    w_expected = np.exp(c * np.linspace(0.0, 1.0, n))
+    if n > 1:
+        w_expected = np.exp(c * np.linspace(0.0, 1.0, n)) / max(1, np.exp(c))
+    else:
+        w_expected = np.array([1.0])
 
     # --- act ---------------------------------------------
     w = _exponential_weights(c, n)

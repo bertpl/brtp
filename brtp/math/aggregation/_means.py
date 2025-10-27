@@ -160,13 +160,25 @@ def _exponential_weights(c: float, n: int) -> np.ndarray:
 @numba.njit
 def _exponential_weights_numba(c: float, n: int) -> np.ndarray:
     """
-    Computes np.exp(c * np.linspace(0.0, 1.0, n)) but in more efficient way,
-    using 1 exponentiation & n multiplications, rather than n exponentiations.
+    Computes n exponential weights with parameter c to be used in weighted_(geo_)mean as follows:
+
+      w = np.exp(c * np.linspace(0.0, 1.0, n)) / max(1, exp(c))
+
+    We avoid computing the exponentiation n times by re-using the previous weight to compute the next one.
+    Normalization is done to ensure that the maximum weight is 1.0; we prefer underflow to 0.0 over overflow to inf.
     """
-    factor = np.exp(c / (n - 1))
-    w = np.ones(n)
-    w_i = 1.0
-    for i in range(n):
-        w[i] = w_i
-        w_i *= factor
-    return w
+    if n == 1:
+        return np.ones(1)
+    elif c == 0.0:
+        return np.ones(n)
+    else:
+        factor = np.exp(-abs(c) / (n - 1))  # use -abs(c) to always generating decreasing sequence
+        w = np.zeros(n)
+        w_i = 1.0
+        for i in range(n):
+            w[i] = w_i
+            w_i *= factor
+        if c < 0:
+            return w
+        else:
+            return w[::-1]  # -abs(c) flipped the sign of c, so reverse the array

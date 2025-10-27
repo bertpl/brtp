@@ -10,6 +10,7 @@
 
 - **improved**:
   - apply best practices for coverage reporting of abstract methods (use ellipsis + exclude in coverage config for good measure)
+  - improve numerical stability of exponential weight computation in `ordered_weighted_mean` & `ordered_weighted_geo_mean`
 
 <!------------------------------------------------------------------------------------------------->
 > ## v0.0.8
