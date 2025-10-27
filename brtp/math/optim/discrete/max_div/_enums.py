@@ -35,10 +35,8 @@ class ConstraintViolationMetric(IntEnum):
 
     def is_relative(self) -> bool:
         """Returns True if the metric is relative, False if absolute."""
-        return (self == ConstraintViolationMetric.RelativeSum) or (self == ConstraintViolationMetric.RelativeSquaredSum)
+        return (self.value % 2) == 0
 
     def is_squared(self) -> bool:
         """Returns True if the metric is squared, False if linear."""
-        return (self == ConstraintViolationMetric.AbsoluteSquaredSum) or (
-            self == ConstraintViolationMetric.RelativeSquaredSum
-        )
+        return self.value > 10
