@@ -5,6 +5,9 @@
 > *(2025-10-27)*
 <!------------------------------------------------------------------------------------------------->
 
+- **new**:
+  - `misc.argument_handling` --> `all_are_none`, `all_are_not_none`, `count_none`, `count_not_none`
+
 - **improved**:
   - apply best practices for coverage reporting of abstract methods (use ellipsis + exclude in coverage config for good measure)
 
