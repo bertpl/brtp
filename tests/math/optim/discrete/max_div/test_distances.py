@@ -3,7 +3,12 @@ import math
 import numpy as np
 import pytest
 
-from brtp.math.optim.discrete.max_div import PairWiseDistances, PairWiseDistances_Eager, PairWiseDistances_Lazy
+from brtp.math.optim.discrete.max_div import (
+    DistanceMetric,
+    PairWiseDistances,
+    PairWiseDistances_Eager,
+    PairWiseDistances_Lazy,
+)
 
 
 # =================================================================================================
@@ -15,7 +20,20 @@ def vectors() -> np.ndarray:
 
 
 @pytest.fixture
-def true_distances(vectors: np.ndarray) -> np.ndarray:
+def true_distances_l1(vectors: np.ndarray) -> np.ndarray:
+    """Matrix of true pair-wise L1 distances for the provided vectors."""
+    m, n = vectors.shape
+    distances = np.zeros((m, m))
+    for i in range(m):
+        for j in range(m):
+            dist = sum([abs(vectors[i, k] - vectors[j, k]) for k in range(n)])
+            distances[i, j] = dist
+    return distances
+
+
+@pytest.fixture
+def true_distances_l2(vectors: np.ndarray) -> np.ndarray:
+    """Matrix of true pair-wise L2 distances for the provided vectors."""
     m, n = vectors.shape
     distances = np.zeros((m, m))
     for i in range(m):
@@ -47,30 +65,34 @@ def test_pair_wise_distances_factory_methods(vectors, factory_method, expected_c
 # =================================================================================================
 #  PairWiseDistances_Eager
 # =================================================================================================
-def test_pair_wise_distances_eager(vectors, true_distances):
+def test_pair_wise_distances_eager(vectors, true_distances_l1, true_distances_l2):
     # --- arrange -----------------------------------------
-    pwd = PairWiseDistances.eager(vectors)
-    m = true_distances.shape[0]
+    pwd_l1 = PairWiseDistances.eager(vectors, DistanceMetric.L1_Manhattan)
+    pwd_l2 = PairWiseDistances.eager(vectors, DistanceMetric.L2_Euclidean)
+    m = true_distances_l2.shape[0]
 
     # --- act & assert ------------------------------------
     for _ in range(2):
         # repeat 2x to make sure caching works correctly, if present
         for i in range(m):
             for j in range(m):
-                assert pwd(i, j) == pytest.approx(true_distances[i, j])
+                assert pwd_l1(i, j) == pytest.approx(true_distances_l1[i, j])
+                assert pwd_l2(i, j) == pytest.approx(true_distances_l2[i, j])
 
 
 # =================================================================================================
 #  PairWiseDistances_Lazy
 # =================================================================================================
-def test_pair_wise_distances_lazy(vectors, true_distances):
+def test_pair_wise_distances_lazy(vectors, true_distances_l1, true_distances_l2):
     # --- arrange -----------------------------------------
-    pwd = PairWiseDistances.lazy(vectors)
-    m = true_distances.shape[0]
+    pwd_l1 = PairWiseDistances.lazy(vectors, DistanceMetric.L1_Manhattan)
+    pwd_l2 = PairWiseDistances.lazy(vectors, DistanceMetric.L2_Euclidean)
+    m = true_distances_l2.shape[0]
 
     # --- act & assert ------------------------------------
     for _ in range(2):
         # repeat 2x to make sure caching works correctly, if present
         for i in range(m):
             for j in range(m):
-                assert pwd(i, j) == pytest.approx(true_distances[i, j])
+                assert pwd_l1(i, j) == pytest.approx(true_distances_l1[i, j])
+                assert pwd_l2(i, j) == pytest.approx(true_distances_l2[i, j])
