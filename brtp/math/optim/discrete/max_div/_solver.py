@@ -6,6 +6,7 @@ import numpy as np
 
 from ._constraints import FairnessConstraint
 from ._distances import PairWiseDistances
+from ._enums import ConstraintViolationMetric, DistanceMetric, DiversityMetric
 from ._result import MaxDivResult
 from ._solver_state import SolverState
 
@@ -19,7 +20,19 @@ class MaxDivSolver:
     # -------------------------------------------------------------------------
     #  Constructor
     # -------------------------------------------------------------------------
-    def __init__(self, vectors: np.ndarray, k: int, constraints: list[FairnessConstraint]):
+    def __init__(
+        self,
+        vectors: np.ndarray,
+        k: int,
+        constraints: list[FairnessConstraint],
+        distance_metric: DistanceMetric = DistanceMetric.L2_Euclidean,
+        diversity_metric: DiversityMetric = DiversityMetric.GeoMeanDist,
+        constraint_violation_metric: ConstraintViolationMetric = ConstraintViolationMetric.RelativeSquaredSum,
+    ):
+        # --- validation ------------------------
+        if k > vectors.shape[0]:
+            raise ValueError(f"Cannot select k={k} elements from only n={vectors.shape[0]} available.")
+
         # --- core properties -------------------
         self._vectors = vectors
         self._k = k
@@ -107,17 +120,15 @@ class MaxDivSolver:
                 metric_candidate = state_candidate.score()
 
                 # --- check if best so far ----------------------
-                if metric_candidate < best_metric:
+                if (best_state is None) or (metric_candidate < best_metric):
                     best_metric = metric_candidate
-                    best_i = i
+                    best_state = state_candidate
 
-            # --- add best found element to selection -------
-            if best_i is None:
-                raise RuntimeError("No valid candidate found to add to selection - cannot proceed.")
-            self._state.modify(add=[best_i])
+            # --- selecte best_state ----------------------
+            self._state = best_state
 
         # --- PHASE 2 -------------------------------------
-        pass  # TODO
+        pass  # to be implemented later
 
         # --- FINISH --------------------------------------
         raise NotImplementedError()
