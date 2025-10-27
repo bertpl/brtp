@@ -10,7 +10,9 @@
 
 - **improved**:
   - apply best practices for coverage reporting of abstract methods (use ellipsis + exclude in coverage config for good measure)
-  - improve numerical stability of exponential weight computation in `ordered_weighted_mean` & `ordered_weighted_geo_mean`
+  - `ordered_weighted_mean` & `ordered_weighted_geo_mean`
+    - improve numerical stability of exponential weight computation
+    - add option to specify target `q` (quantile or orness) value based on which appropriate `c` parameter will be auto-computed
 
 <!------------------------------------------------------------------------------------------------->
 > ## v0.0.8
