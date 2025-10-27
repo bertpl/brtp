@@ -1,6 +1,6 @@
 [project]
 name = "brtp"
-version = "0.0.8"
+version = "0.0.9"
 description = "Collection of personal Python utilities."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -12,6 +12,13 @@ dependencies = [
 [project.optional-dependencies]
 numba = [
     "numba>=0.57",
+]
+
+[dependency-groups]
+dev = [
+    "genbadge[all]>=1.1.2",
+    "pytest>=8.0",
+    "pytest-cov>=6.0",
 ]
 
 [project.urls]
@@ -37,9 +44,8 @@ target-version = "py313"
 [tool.ruff.lint]
 select = ["I"]
 
-[dependency-groups]
-dev = [
-    "genbadge[all]>=1.1.2",
-    "pytest>=8.0",
-    "pytest-cov>=6.0",
+[tool.coverage.report]
+exclude_also = [
+    "@abstractmethod",
+    "@abc.abstractmethod",
 ]

@@ -113,17 +113,17 @@ class Transform(ABC):
     @abstractmethod
     def _forward(self, v_user: np.ndarray) -> np.ndarray:
         """Forward transform (user scale -> figure scale), irrespective of reverse flag"""
-        raise NotImplementedError()
+        ...
 
     @abstractmethod
     def _backward(self, v_fig: np.ndarray) -> np.ndarray:
         """Backward (inverse) transform (figure scale -> user scale), irrespective of reverse flag"""
-        raise NotImplementedError()
+        ...
 
     @abstractmethod
     def is_linear(self) -> bool:
         """Return True if the transform is linear, False otherwise."""
-        raise NotImplementedError()
+        ...
 
     # -------------------------------------------------------------------------
     #  Factory methods

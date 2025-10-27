@@ -1,6 +1,20 @@
 # Change Log
 
 <!------------------------------------------------------------------------------------------------->
+> ## v0.0.9
+> *(2025-10-27)*
+<!------------------------------------------------------------------------------------------------->
+
+- **new**:
+  - `misc.argument_handling` --> `all_are_none`, `all_are_not_none`, `count_none`, `count_not_none`
+
+- **improved**:
+  - apply best practices for coverage reporting of abstract methods (use ellipsis + exclude in coverage config for good measure)
+  - `ordered_weighted_mean` & `ordered_weighted_geo_mean`
+    - improve numerical stability of exponential weight computation
+    - add option to specify target `q` (quantile or orness) value based on which appropriate `c` parameter will be auto-computed
+
+<!------------------------------------------------------------------------------------------------->
 > ## v0.0.8
 > *(2025-10-26)*
 <!------------------------------------------------------------------------------------------------->
