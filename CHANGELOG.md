@@ -6,6 +6,7 @@
 <!------------------------------------------------------------------------------------------------->
 
 - **new**:
+  - `compat.numba` --> initial support for transparently handling typed Dict, typed List
   - move to trunk-based development workflow with release branches
 
 <!------------------------------------------------------------------------------------------------->
