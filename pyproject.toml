@@ -19,11 +19,12 @@ dev = [
     "genbadge[all]>=1.1.2",
     "pytest>=8.0",
     "pytest-cov>=6.0",
+    "pytest-xdist>=3.5.0",
 ]
 
 [project.urls]
 Source = "https://github.com/bertpl/brtp"
-ChangeLog = "https://github.com/bertpl/brtp/blob/develop/CHANGELOG.md"
+ChangeLog = "https://github.com/bertpl/brtp/blob/main/CHANGELOG.md"
 Issues = "https://github.com/bertpl/brtp/issues"
 Roadmap = "https://github.com/bertpl/brtp/milestones"
 
@@ -44,8 +45,14 @@ target-version = "py313"
 [tool.ruff.lint]
 select = ["I"]
 
+[tool.coverage.run]
+source = ["brtp"]
+
 [tool.coverage.report]
 exclude_also = [
     "@abstractmethod",
     "@abc.abstractmethod",
 ]
+
+[tool.pytest.ini_options]
+addopts = "-n auto --dist worksteal"

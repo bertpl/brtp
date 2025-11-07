@@ -3,9 +3,6 @@ author: Bert Pluymers
 description: Check if ChangeLog is part of PR & has version number in it
 
 inputs:
-    uv_version:
-        required: true
-        description: "Version of UV to be used."
     git_ref:
         required: true
         description: "git ref that triggered workflow"
@@ -15,14 +12,11 @@ runs:
   using: "composite"
   steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          version: ${{ inputs.uv_version }}
+      - uses: astral-sh/setup-uv@v7
 
       - name: Check if release notes have changed
         shell: bash

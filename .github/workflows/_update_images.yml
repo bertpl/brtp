@@ -1,0 +1,49 @@
+name: Update Images
+on:
+  workflow_call:
+    secrets:
+      gh_token:
+        required: true
+        description: "GitHub token for authentication"
+
+jobs:
+  update-badges:
+    name: Badges
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - uses: ./.github/actions/update_badges
+        with:
+          github_token: ${{ secrets.gh_token }}
+
+  update-splash:
+    name: Splash
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - uses: ./.github/actions/update_splash
+        with:
+          github_token: ${{ secrets.gh_token }}
+
+  upload-version-artefacts:
+    name: Upload
+    runs-on: ubuntu-latest
+    needs: [update-badges, update-splash]
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - uses: ./.github/actions/upload_version_artefacts
+        id: deployment
+        with:
+          github_token: ${{ secrets.gh_token }}
