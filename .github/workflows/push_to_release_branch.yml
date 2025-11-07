@@ -158,19 +158,13 @@ jobs:
         with:
           version: ${{ vars.UV_VERSION }}
 
-      - name: Create tag
+      - name: Create tag via API
+        env:
+          GH_TOKEN: ${{ secrets.GIT_ADMIN_TOKEN }}
         run: |
-          git config --local user.name "GitHub Actions"
-          git config --local user.email ""          
-          git remote set-url origin https://x-access-token:${{ secrets.GIT_ADMIN_TOKEN }}@github.com/bertpl/brtp.git          
-          git pull origin "$GITHUB_REF"          
+          TAG="v$(uv version --short)"
+          COMMIT_SHA="${{ github.sha }}"
           
-          TAG="v$( uv version --short )"  
-          if git show-ref --tags --verify --quiet "refs/tags/${TAG}"; then
-            echo "Tag ${TAG} already exists --> do not create & fail this step"
-            exit -1
-          else
-            echo "Tag ${TAG} does not exist --> create it now"
-            git tag "$TAG"
-            git push origin "$TAG"
-          fi
+          gh api repos/${{ github.repository }}/git/refs \
+            -f ref="refs/tags/${TAG}" \
+            -f sha="${COMMIT_SHA}"
