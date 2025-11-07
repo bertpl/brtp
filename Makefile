@@ -36,3 +36,6 @@ format:
 format-single-file:
 	uvx ruff format ${file_path};
 	uvx ruff check --fix ${file_path};
+
+splash:
+	./.github/scripts/create_splash.sh "$$(uv version --short)-dev";

@@ -18,18 +18,16 @@ runs:
         uses: actions/checkout@v4
         with:
           token: '${{ inputs.github_token }}'
-          ref: develop  # this always acts upon the develop branch
+          ref: ${{ github.ref }}   # check out the triggering ref
+
+      - name: Determine Build Type
+        id: build_type
+        uses: ./.github/actions/build_type
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:
           version: ${{ inputs.uv_version }}
-
-      - name: Determine Package version
-        shell: bash
-        run: |
-            PACKAGE_VERSION=$(uv version --short)
-            echo "PACKAGE_EFFECTIVE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
 
       - name: Update README URLs & Commit changes
         shell: bash
@@ -37,9 +35,9 @@ runs:
           git config --local user.name "GitHub Actions"
           git config --local user.email ""          
           git remote set-url origin https://x-access-token:${{ inputs.github_token }}@github.com/bertpl/brtp.git          
-          git pull origin develop
+          git pull origin "$GITHUB_REF"
           
-          uv run --python 3.13 .github/scripts/update_readme_urls.py "$GITHUB_WORKSPACE/.python-versions" "$GITHUB_WORKSPACE/pyproject.toml" "$GITHUB_WORKSPACE/README.md"
+          uv run --python 3.13 .github/scripts/update_readme_urls.py "$GITHUB_WORKSPACE/.python-versions" "$GITHUB_WORKSPACE/pyproject.toml" "$GITHUB_WORKSPACE/README.md" "${{ steps.build_type.outputs.build_type }}"
           echo "----------------------------------------------------------"
           cat "$GITHUB_WORKSPACE/README.md" | head -n 10
           echo "..."
