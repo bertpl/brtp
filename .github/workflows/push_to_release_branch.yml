@@ -36,7 +36,7 @@ jobs:
           fi
 
   check-version-tag-does-not-exist:
-    name: check version
+    name: Check version tag does not exist
     runs-on: ubuntu-latest
     steps:
       - name: Full checkout
@@ -60,8 +60,6 @@ jobs:
           fi
 
   update-badges:
-    needs:
-     - validate-branch-version
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -75,8 +73,6 @@ jobs:
           github_token: ${{ secrets.GIT_ADMIN_TOKEN }}
 
   update-splash:
-    needs:
-     - validate-branch-version
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -108,8 +104,6 @@ jobs:
           github_token: ${{ secrets.GIT_ADMIN_TOKEN }}
 
   test:
-    needs:
-     - validate-branch-version
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -129,8 +123,6 @@ jobs:
           include_all_extra_deps: ${{ matrix.include_all_extra_deps }}
 
   update-readme:
-    needs:
-     - validate-branch-version
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -149,9 +141,10 @@ jobs:
   tag-as-release:
     name: tag as release
     needs:
-     - test
-     - update-readme
      - check-version-tag-does-not-exist
+     - validate-branch-version
+     - update-readme
+     - test
     if: needs.update-readme.outputs.readme_updated == 'false'
     runs-on: ubuntu-latest
     steps:
@@ -167,6 +160,11 @@ jobs:
 
       - name: Create tag
         run: |
+          git config --local user.name "GitHub Actions"
+          git config --local user.email ""          
+          git remote set-url origin https://x-access-token:${{ secrets.GIT_ADMIN_TOKEN }}@github.com/bertpl/brtp.git          
+          git pull origin "$GITHUB_REF"          
+          
           TAG="v$( uv version --short )"  
           if git show-ref --tags --verify --quiet "refs/tags/${TAG}"; then
             echo "Tag ${TAG} already exists --> do not create & fail this step"
