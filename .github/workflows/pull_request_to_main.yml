@@ -43,7 +43,6 @@ jobs:
         uses: ./.github/actions/check_changelog
         with:
           uv_version: ${{ vars.UV_VERSION }}
-          git_ref: ${{ github.event.pull_request.base.ref }}
 
 
   test:
