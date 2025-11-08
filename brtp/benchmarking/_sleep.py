@@ -20,7 +20,7 @@ def high_precision_sleep(duration_sec: float):
     iters = 0
     while True:
         # check if we need to stop
-        if time.perf_counter() > (target_time + 0.5 * estimated_cycle_time):
+        if time.perf_counter() > (target_time - 0.5 * estimated_cycle_time):
             # stopping now is closer to the target time than doing another cycle
             break
 

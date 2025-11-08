@@ -7,6 +7,7 @@
 
 - **improved**:
   - further improvements to CI/CD pipeline
+  - minor fix to `high_precision_sleep` function
 
 <!------------------------------------------------------------------------------------------------->
 > ## v0.0.14
