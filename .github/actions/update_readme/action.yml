@@ -51,7 +51,7 @@ runs:
               echo "No changes to commit"
           else
               git add "$GITHUB_WORKSPACE/README.md"
-              git commit -m "Update README.md image URLs"
+              git commit -m "Update README.md for ${{ steps.build_type.outputs.build_type }}/v$(uv version --short)"
               git push
               echo "readme_updated=true" >> $GITHUB_OUTPUT
               echo "Changes committed and pushed"

@@ -31,10 +31,18 @@ jobs:
           github_token: ${{ secrets.GIT_ADMIN_TOKEN }}
           fail_if_updated: 'true'
 
+  check-change-log:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Check change log
+        uses: ./.github/actions/check_changelog
+
   update-images:
     needs:
      - version-checks
      - update-readme
+     - check-change-log
     uses: ./.github/workflows/_update_images.yml
     secrets:
       gh_token: ${{ secrets.GIT_ADMIN_TOKEN }}
@@ -43,6 +51,7 @@ jobs:
     needs:
      - version-checks
      - update-readme
+     - check-change-log
     uses: ./.github/workflows/_unit_tests.yml
 
   tag-as-release:
