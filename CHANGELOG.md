@@ -8,6 +8,7 @@
 - **improved**:
   - further improvements to CI/CD pipeline
   - minor fix to `high_precision_sleep` function
+  - add automatic test retries for tests that are flaky in CI environment
 
 <!------------------------------------------------------------------------------------------------->
 > ## v0.0.14

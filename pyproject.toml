@@ -20,6 +20,7 @@ dev = [
     "pytest>=8.0",
     "pytest-cov>=6.0",
     "pytest-xdist>=3.5.0",
+    "pytest-rerunfailures>=14.0",
 ]
 
 [project.urls]

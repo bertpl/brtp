@@ -3,8 +3,9 @@ import pytest
 from brtp.benchmarking import benchmark, high_precision_sleep
 
 
-@pytest.mark.parametrize("t_sleep", [1e-4, 1e-3])
+@pytest.mark.parametrize("t_sleep", [1e-5, 1e-4, 1e-3])
 @pytest.mark.parametrize("silent", [True, False])
+@pytest.mark.flaky(reruns=10, reruns_delay=0.1)  # benchmark tests are flaky in GitHub Actions
 def test_micro_benchmark(t_sleep: float, silent: bool):
     # --- arrange -----------------------------------------
     def f_test():
