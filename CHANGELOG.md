@@ -5,6 +5,9 @@
 > *(2025-11-08)*
 <!------------------------------------------------------------------------------------------------->
 
+- **new**:
+  - `benchmarking` --> `high_precision_sleep`
+
 - **improved**:
   - further streamline CI/CD pipeline
 
