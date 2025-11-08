@@ -3,7 +3,7 @@ import pytest
 from brtp.benchmarking import benchmark, high_precision_sleep
 
 
-@pytest.mark.parametrize("t_sleep", [1e-4, 1e-3])
+@pytest.mark.parametrize("t_sleep", [1e-4, 1e-3, 1e-2])
 @pytest.mark.parametrize("silent", [True, False])
 def test_micro_benchmark(t_sleep: float, silent: bool):
     # --- arrange -----------------------------------------
