@@ -12,12 +12,6 @@ jobs:
   check-change-log:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0  # Fetch all history for accurate diff
-
+      - uses: actions/checkout@v5
       - name: Check change log
         uses: ./.github/actions/check_changelog
-        with:
-          git_ref: ${{ github.event.pull_request.base.ref }}

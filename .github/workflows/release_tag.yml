@@ -39,6 +39,7 @@ jobs:
 
 
   bump-version:
+    name: Bump version
     needs: publish-to-prod
     runs-on: ubuntu-latest
     steps:

@@ -21,20 +21,38 @@ jobs:
     permissions:
       contents: write
     outputs:
-      readme_updated: ${{ steps.update_readme_step.outputs.readme_updated }}
+      readme_updated: ${{ steps.update_readme.outputs.readme_updated }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - uses: ./.github/actions/update_readme
+      - name: Update readme
+        id: update_readme
+        uses: ./.github/actions/update_readme
         with:
           github_token: ${{ secrets.GIT_ADMIN_TOKEN }}
-          fail_if_updated: 'true'
+
+      - name: Check readme update output
+        run: |
+          echo "README updated: ${{ steps.update_readme.outputs.readme_updated }}"
+          if [ "${{ steps.update_readme.outputs.readme_updated }}" = "true" ]; then
+            echo "⚠️  README was updated, committed & pushed."
+            echo "Subsequent jobs will be skipped, but will re-run triggered by the next commit."
+          fi
+
+  check-change-log:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Check change log
+        uses: ./.github/actions/check_changelog
 
   update-images:
     needs:
      - version-checks
      - update-readme
+     - check-change-log
+    if: needs.update-readme.outputs.readme_updated == 'false'
     uses: ./.github/workflows/_update_images.yml
     secrets:
       gh_token: ${{ secrets.GIT_ADMIN_TOKEN }}
@@ -43,6 +61,8 @@ jobs:
     needs:
      - version-checks
      - update-readme
+     - check-change-log
+    if: needs.update-readme.outputs.readme_updated == 'false'
     uses: ./.github/workflows/_unit_tests.yml
 
   tag-as-release:
