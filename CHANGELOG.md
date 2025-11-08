@@ -1,14 +1,22 @@
 # Change Log
 
 <!------------------------------------------------------------------------------------------------->
+> ## v0.0.16
+> *(2025-11-08)*
+<!------------------------------------------------------------------------------------------------->
+
+- **improved**:
+  - CI: reduce `gh-pages` noise by means of automatic squashing of commits
+
+<!------------------------------------------------------------------------------------------------->
 > ## v0.0.15
 > *(2025-11-08)*
 <!------------------------------------------------------------------------------------------------->
 
 - **improved**:
-  - further improvements to CI/CD pipeline
+  - CI: further improvements to CI/CD pipeline
+  - CI: add automatic test retries for tests that are flaky in CI environment
   - minor fix to `high_precision_sleep` function
-  - add automatic test retries for tests that are flaky in CI environment
 
 <!------------------------------------------------------------------------------------------------->
 > ## v0.0.14

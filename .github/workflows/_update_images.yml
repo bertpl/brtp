@@ -40,10 +40,59 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/upload_version_artefacts
         id: deployment
         with:
           github_token: ${{ secrets.gh_token }}
+
+  squash-gh-pages:
+    needs: upload-version-artefacts
+    name: Squash
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v5
+        with:
+          token: '${{ secrets.gh_token }}'
+          ref: gh-pages
+          fetch-depth: 0  # Get full history
+
+      - name: Squash all commits into one
+        run: |
+          # Configure git user
+          git config --local user.name "GitHub Actions"
+          git config --local user.email ""          
+          git remote set-url origin https://x-access-token:${{ secrets.gh_token }}@github.com/${{ github.repository }}.git
+
+          # Check if the most recent commit already starts with "Squashed"
+          LATEST_COMMIT_MSG=$(git log -1 --pretty=%B)
+          
+          if [[ "$LATEST_COMMIT_MSG" == Squashed* ]]; then
+
+              echo "ℹ️  Most recent commit already squashed. Skipping squash operation."
+              exit 0
+
+          else
+
+              echo "📦 Squashing commits..."
+    
+              # Get the first commit hash
+              FIRST_COMMIT=$(git rev-list --max-parents=0 HEAD)
+              
+              # Soft reset to first commit (keeps all files staged)
+              git reset --soft $FIRST_COMMIT
+              
+              # Amend the first commit to include all changes
+              git commit --amend -m "Squashed gh-pages history - $(date +'%Y-%m-%d')"
+              
+              # Force push the squashed history
+              git push -f origin gh-pages
+              
+              echo "✅ Squash completed successfully."
+          
+          fi
+          
+
